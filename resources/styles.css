@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+
+    turbo-frame {
+        display: block;
+      }
+
+}
+
+@layer components {
+    .card {
+        @apply p-6 border rounded-lg text-left container mx-auto overflow-x-auto max-w-sm md:max-w-lg;
+    }
+
+    .question::first-letter {
+        @apply text-xl font-semibold text-red-800;
+    }
+
+    .question {
+        @apply text-gray-700 mb-4;
+    }
+
+    .question pre {
+        @apply overflow-x-auto my-4 py-4 border-y border-slate-200;
+    }
+    
+    .answer {
+        @apply text-gray-600 pl-4;
+    }
+
+    .answer pre {
+        @apply overflow-x-auto my-4 py-4 border-y border-slate-200;
+    }
+
+
+    /* show question, hide answer */
+    .drill.question .answer {
+        @apply hidden;
+    }
+
+    /* hide question, show answer */
+    .drill.answer .question {
+        @apply hidden;
+    }
+
+}
+
+@layer utilities {
+
+}

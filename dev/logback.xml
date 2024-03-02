@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<configuration scanPeriod='5 seconds' scan='true'>
+<appender class='ch.qos.logback.core.ConsoleAppender' name='STDOUT'>
+<filter class='ch.qos.logback.classic.filter.ThresholdFilter'>
+<level>
+DEBUG
+</level>
+</filter>
+<encoder>
+<pattern>
+%date %highlight(%-5level) %logger{36}: %msg%n
+</pattern>
+<charset>
+UTF-8
+</charset>
+</encoder>
+</appender>
+<root level= 'ERROR'>
+</root>
+<logger level='DEBUG' name='fullmeta'>
+<appender-ref ref='STDOUT'>
+</appender-ref>
+</logger>
+<logger level='DEBUG' name='app'>
+<appender-ref ref='STDOUT'>
+</appender-ref>
+</logger>
+</configuration>

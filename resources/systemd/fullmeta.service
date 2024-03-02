@@ -1,0 +1,32 @@
+# To use this unit file in Debian 12:
+# -----------------------------------
+# 1. Save as /etc/systemd/system/fullmeta.service or symlink from it.
+# 2. `systemctl daemon-reload` to make systemd aware of the new service.
+# 3. `systemctl enable fullmeta` to start on boot.
+# 4. `systemctl start fullmeta` to start immediately.
+#
+# Check status:
+# -------------
+# `systemctl status fullmeta`.
+#
+# Tail logs:
+# ----------
+# journalctl -fu clojure-webhook
+#
+# -f is short for --follow
+# -u is short for --unit
+
+[Unit]
+Description = Neo4j Fullmeta Service
+After = network.target
+
+[Service]
+Type = simple
+ExecStart = /usr/local/bin/clojure -M:main:prod :server :start
+WorkingDirectory = /root/fullmeta-app
+User = root
+Group = root
+Restart = on-failure
+
+[Install]
+WantedBy = multi-user.target

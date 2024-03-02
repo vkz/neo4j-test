@@ -1,0 +1,48 @@
+/.direnv/
+.envrc.private
+__pycache__
+/app.zip
+/package-lock.json
+/profile
+/.cpcache
+/.nrepl-port
+/classes
+*.go
+*.log
+*~
+.#*
+\#*\#
+,*
+GTAGS
+CTAGS
+TAGS
+.DS_Store
+/.m2
+/node_modules
+################################ Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+################################ RESOURCES to populate manually
+/resources/*
+################# keep styles and custom js
+!/resources/*.css
+!/resources/*.js
+################# keep prompts
+!/resources/prompt/
+!/resources/prompt/*
+################# keep db migrations
+!/resources/db/
+!/resources/db/**/*
+################# keep systemd service definitions
+!/resources/systemd
+!/resources/systemd/**/*
+#################
+!/resources/public
+/resources/public/img/*
+!/resource/public/*.html
+!/resource/public/*.js
+!/resource/public/*.css
+!/resource/public/*.txt
+/TELEGRAM_OFFSET
+/DEV_TELEGRAM_OFFSET

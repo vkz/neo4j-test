@@ -1,0 +1,3 @@
+[submodule "fullmeta/web"]
+	path = fullmeta/web
+	url = git@github.com:fullmeta-dev/web.git
