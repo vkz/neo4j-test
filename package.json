@@ -7,11 +7,14 @@
   },
   "devDependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",
-    "@tailwindcss/forms": "^0.5.4",
-    "@tailwindcss/typography": "^0.5.9",
-    "tailwindcss": "^3.3.3"
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.10",
+    "fomantic-ui": "^2.9.3",
+    "tailwindcss": "^3.4.1"
   },
-  "scripts": {"css": "npx tailwindcss -i ./resources/styles.css -o ./resources/public/styles.css --watch 2>&1 | tee tailwind.log"},
+  "scripts": {
+    "css": "npx tailwindcss -i ./resources/styles.css -o ./resources/public/styles.css --watch 2>&1 | tee tailwind.log"
+  },
   "author": "",
   "license": ""
 }

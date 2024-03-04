@@ -1,0 +1,7 @@
+version,group,bench_simple,bench_full,mode,mean,unit,timestamp,datetime
+old,Cypher,IndexScan.executePlan,"IndexScan.executePlan_(propertyType,long)_(runtime,interpreted)",LATENCY,241.0864769,ms,1576452190236,15/12/2019 23:23:10
+old,Cypher,IndexScan.executePlan,"IndexScan.executePlan_(propertyType,long)_(runtime,interpreted)",LATENCY,251.6315959,ms,1576214538490,13/12/2019 05:22:18
+new,Cypher,IndexScan.executePlan,"IndexScan.executePlan_(propertyType,long)_(runtime,interpreted)",LATENCY,247.6888725,ms,1575788177503,08/12/2019 06:56:18
+old,Cypher,AnyInListExpression.executePlan,"AnyInListExpression.executePlan_(engine,COMPILED)_(size,1000)",LATENCY,1.269600601,ms,1576452190236,15/12/2019 23:23:10
+new,Cypher,AnyInListExpression.executePlan,"AnyInListExpression.executePlan_(engine,COMPILED)_(size,1000)",LATENCY,1.281090306,ms,1576214538490,13/12/2019 05:22:18
+old,Cypher,AnyInListExpression.executePlan,"AnyInListExpression.executePlan_(engine,COMPILED)_(size,1000)",LATENCY,1.440403603,ms,1575788177503,08/12/2019 06:56:18

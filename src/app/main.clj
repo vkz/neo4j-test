@@ -19,8 +19,7 @@
             [ring.middleware.default-charset    :refer [wrap-default-charset]]
             [ring.middleware.cookies            :refer [wrap-cookies]]
             [ring.util.response                 :as ring.response]
-            [ring.util.request                  :as ring.request]
-            [app.core                          :as core])
+            [ring.util.request                  :as ring.request])
   (:import [java.lang.management ManagementFactory]
            [org.eclipse.jetty.server.handler StatisticsHandler]
            [org.eclipse.jetty.io ConnectionStatistics]
@@ -178,14 +177,8 @@
     (let [system (system args)
           shutdown (fn []
                      (log/info "SIGTERM requested. Shutting down.")
-                     (try
-                       (-> system :server .stop)
-                       (finally
-                         ;; reset db connection
-                         (core/reset))))]
+                     (-> system :server .stop))]
       (.addShutdownHook (Runtime/getRuntime) (Thread. ^Runnable shutdown))
       (.join (:server system))
-      ;; reset db connection
-      (core/reset)
       (log/info "Exit"))))
 

@@ -1,6 +1,7 @@
 (ns user
   (:require [prelude :as dev.prelude]
             [app.main]
+            [app.db]
             [app.prelude :as prelude]
             [clojure.edn :as edn]
             [clojure.tools.logging :as log]
@@ -31,11 +32,13 @@
   {:server true})
 
 (defn start []
+  (app.db/hydrate!)
   (swap! system (constantly
                  (log/spy
                   (app.main/system components)))))
 
 (defn stop []
+  (reset! app.db/*connection* nil)
   (some-> @system :server .stop)
   (swap! system (constantly nil)))
 
