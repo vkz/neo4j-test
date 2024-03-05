@@ -904,6 +904,10 @@ turbo-frame {
   border-radius: 0px;
 }
 
+.border {
+  border-width: 1px;
+}
+
 .border-x-2 {
   border-left-width: 2px;
   border-right-width: 2px;
@@ -912,6 +916,14 @@ turbo-frame {
 .border-x-4 {
   border-left-width: 4px;
   border-right-width: 4px;
+}
+
+.border-b-2 {
+  border-bottom-width: 2px;
+}
+
+.border-b {
+  border-bottom-width: 1px;
 }
 
 .border-solid {
@@ -925,6 +937,16 @@ turbo-frame {
 .border-green-600 {
   --tw-border-opacity: 1;
   border-color: rgb(22 163 74 / var(--tw-border-opacity));
+}
+
+.border-rose-600 {
+  --tw-border-opacity: 1;
+  border-color: rgb(225 29 72 / var(--tw-border-opacity));
+}
+
+.border-gray-200 {
+  --tw-border-opacity: 1;
+  border-color: rgb(229 231 235 / var(--tw-border-opacity));
 }
 
 .border-x-rose-600 {

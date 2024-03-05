@@ -16,23 +16,36 @@
   (for [param (drop 1 (string/split benchmark-name #"_"))]
     [:div param]))
 
-(defn tr-com [bench old new]
-  (let [lower-style " underline decoration-1 underline-offset-4"
-        o<n (when (< (:mean old) (:mean new)) lower-style)
-        o>=n (when-not o<n lower-style)
-        green (when o>=n "border-solid border-x-2 border-green-600 rounded-none")]
-    [:tr {:class green}
+(defn regression? [[bench {old :mean} {new :mean}]]
+  (< old new))
+
+(defn group-regression? [benchmarks]
+  ;; TODO proper regression logic should reflect confidence in our means i.e. consider var or var
+  ;; coefficient and likely allow for some threshold between old mean and new mean
+  (some regression? benchmarks))
+
+(defn tr-com [[bench old new :as benchmark]]
+  (let [regression? (regression? benchmark)
+        underline " underline decoration-1 underline-offset-4 "
+        underline-old (when regression? underline)
+        underline-new (when-not regression? underline)
+        td-old " whitespace-nowrap px-3 py-4 text-sm text-gray-400 border-solid border-b rounded-none border-gray-200 "
+        td-new " whitespace-nowrap px-3 py-4 text-sm text-gray-900 border-solid border-b rounded-none border-gray-200 "
+        border " border-solid border-x-2 rounded-none "
+        red (when regression? (str border "border-rose-600"))
+        green (when-not regression? (str border "border-green-600"))]
+    [:tr {:class (or red green)}
      [:td {:class "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"} (bench-params-com bench)]
      ;; old readings
-     [:td {:class "whitespace-nowrap px-3 py-4 text-sm text-gray-400"} (->> old :count)]
-     [:td {:class "whitespace-nowrap px-3 py-4 text-sm text-gray-400"} (->> old :var (format "%.2f"))]
-     [:td {:class "whitespace-nowrap px-3 py-4 text-sm text-gray-400"} (->> old :cv (format "%.3f"))]
-     [:td {:class (str "whitespace-nowrap px-3 py-4 text-sm text-gray-400 " o<n)} (->> old :mean (format "%.2f"))]
+     [:td {:class td-old} (->> old :count)]
+     [:td {:class td-old} (->> old :var (format "%.2f"))]
+     [:td {:class td-old} (->> old :cv (format "%.3f"))]
+     [:td {:class (str td-old underline-old)} (->> old :mean (format "%.2f"))]
      ;; new readings
-     [:td {:class (str "whitespace-nowrap px-3 py-4 text-sm text-gray-900" o>=n)} (->> new :mean (format "%.2f"))]
-     [:td {:class "whitespace-nowrap px-3 py-4 text-sm text-gray-900"} (->> new :cv (format "%.3f"))]
-     [:td {:class "whitespace-nowrap px-3 py-4 text-sm text-gray-900"} (->> new :var (format "%.2f"))]
-     [:td {:class "whitespace-nowrap px-3 py-4 text-sm text-gray-900"} (->> new :count)]]))
+     [:td {:class (str td-new underline-new)} (->> new :mean (format "%.2f"))]
+     [:td {:class td-new} (->> new :cv (format "%.3f"))]
+     [:td {:class td-new} (->> new :var (format "%.2f"))]
+     [:td {:class td-new} (->> new :count)]]))
 
 (defn table-com [benchmarks]
   [:div {:class "mt-8 flow-root"}
@@ -53,9 +66,13 @@
          [:th {:scope "col" :class "px-3 py-3.5 text-left text-sm font-semibold text-gray-900"} "cv"]
          [:th {:scope "col" :class "px-3 py-3.5 text-left text-sm font-semibold text-gray-900"} "var"]
          [:th {:scope "col" :class "px-3 py-3.5 text-left text-sm font-semibold text-gray-900"} "count"]]]
-       [:tbody {:class "divide-y divide-gray-200 bg-white"}
-        (for [[bench old new] benchmarks]
-          (tr-com bench old new))]]]]]])
+       [:tbody
+        ;; TODO GO HOME CSS YOU'RE DRUNK divide shadows border settings inside table fml so I had to
+        ;; divide manually for each row
+        #_{:class "divide-y divide-gray-200 bg-white"}
+        {:class "bg-white"}
+        ;; render benchmark groups
+        (map tr-com benchmarks)]]]]]])
 
 (def toggle-benchmark-state
   {"expanded" "collapsed"
@@ -67,23 +84,27 @@
 
 (defn benchmark-com [group state]
   (let [toggle-state {:group group :state (toggle-benchmark-state state)}
-        toggle-action (toggle-benchmark-action state)]
-    [:div {:class "bg-gray-100 py-10 rounded-lg"}
-     [:div {:class "px-4 sm:px-6 lg:px-8"}
+        toggle-action (toggle-benchmark-action state)
+        old (db/benchmark-stats group "old")
+        new (db/benchmark-stats group "new")
+        benchmarks (for [bench (set (concat (keys old) (keys new)))]
+                     [bench (get old bench) (get new bench)])
+        regression? (group-regression? benchmarks)
+        border " border-solid border-x-2 rounded-none "
+        red (when regression? (str border "border-rose-600"))
+        green (when-not regression? (str border "border-green-600"))]
+    [:div {:class (str "bg-gray-100 py-10 rounded-lg" (when (= state "collapsed") (or red green)))}
+     [:div {:class "px-4 sm:px-6 lg:px-8 "}
       [:div {:class "sm:flex sm:items-center"}
        [:div {:class "sm:flex-auto"}
         [:h1 {:class "text-base font-semibold leading-6 text-gray-900"} group]
-        [:p {:class "mt-2 text-sm text-gray-700"} "A list of all the users in your account including their name, title, email and role."]]
+        [:p {:class "mt-2 text-sm text-gray-700"} "TODO render select group benchmark stats here"]]
        [:div {:class "mt-4 sm:ml-16 sm:mt-0 sm:flex-none"}
         [:a {:href (str "/benchmark?" (web/url-encode toggle-state))}
          [:button {:type "button" :class "block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"}
           toggle-action]]]]
       (case state
-        ("expanded") (let [old (db/benchmark-stats group "old")
-                           new (db/benchmark-stats group "new")]
-                       (table-com
-                        (for [bench (set (concat (keys old) (keys new)))]
-                          [bench (get old bench) (get new bench)])))
+        ("expanded") (table-com benchmarks)
         ("collapsed") nil)]]))
 
 (defn page [& body]
@@ -110,6 +131,7 @@
     [:body
      [:div {:class "mx-auto max-w-7xl space-y-4 py-8"}
       (for [group (db/benchmark-groups)]
+        ;; TODO confirm loading is lazy here (we should probably see network activity as we scroll
         [:turbo-frame
          {:id group
           :src (str "/benchmark?" (web/url-encode {:group group :state "collapsed"}))
