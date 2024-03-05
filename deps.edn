@@ -44,7 +44,7 @@
   :dev {:extra-paths ["dev"]
         :jvm-opts ["-Denv_type=dev" "-Denv_port=3000" "-Denv_edn=env-dev.edn" "-Denv_domain=127.0.0.1"]}
   :prod {:extra-paths ["prod"]
-         :jvm-opts ["-Denv_type=prod" "-Denv_port=80" "-Denv_edn=env-prod.edn" "-Denv_pidfile=../service.pid"]}
+         :jvm-opts ["-Denv_type=dev" "-Denv_port=80" "-Denv_edn=env-prod.edn" "-Denv_pidfile=../service.pid"]}
 
   ;; dev$  clojure -M:main:dev           :server :start
   ;; prod$ clojure -M:main:prod :server :start
