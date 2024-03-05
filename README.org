@@ -1,0 +1,49 @@
+* Show me
+
+https://neo4j.fullmeta.co.uk/
+
+Code you want to look at:
+- [[https://github.com/vkz/neo4j-test/blob/master/src/app/db.clj][src/app/db.clj]]
+- [[https://github.com/vkz/neo4j-test/blob/master/src/app/web/www.clj][src/app/web/www.clj]]
+
+* Install and run
+
+#+begin_src shell
+  $ git clone --recurse-submodules git@github.com:vkz/neo4j-test.git
+
+  $ cd neo4j-test
+
+  $ clojure -M:main:dev :server :start
+  # or cider-jack-in-clj or whatever it is in IntelliJ
+#+end_src
+
+* How's the sausage made
+
+Data from CSVs injected into Datascript.
+
+All rendering is done server-side using my own, dare I say, web-framework. You can check it out under =fullmeta/web= submodule or [[https://github.com/fullmeta-dev/web/tree/d6cdd9fef28e4e21a10798f8f3c0d89a3f3051de][on github]].
+
+Not a single line of custom Javascript served. Just a tiny bit of https://github.com/hotwired/turbo to provide what little "interactivity" we want. For anything beyond that you'd probably want **React**.
+
+While we collect some aggregates like =stddev= and =cv= aka **Coefficient of Variation** I made no effort to do proper confidence analysis or come up with clever representative metrics that would constitute regression. These and illuminating UI would require us sitting down with customers not me staring at the screen.
+
+* Budget
+
+I'd estimate 5-6 hours spent total.
+
+~1hr playing with data in excel.
+
+~2hr playing with Fulcro foolishly thinking I'll have you all mighty impressed. There is opinionated and then there is Fulcro :) It is pretty cool fwiw - state machines is the way. Both tooling and documentation are great - certainly compared to re-frame. But it'll take me a few days to get to grips with it. Good news - I have fully working setup for it now.
+
+Rest mostly spent implementing what you see.
+
+Code you want to look at:
+- [[https://github.com/vkz/neo4j-test/blob/master/src/app/db.clj][src/app/db.clj]]
+- [[https://github.com/vkz/neo4j-test/blob/master/src/app/web/www.clj][src/app/web/www.clj]]
+
+
+* TODO
+
+There's plenty. Proper regression testing: consider variance, introduce reasonable thresholds, etc. Without it not much use to render any reports, with it it'll be straigtforward. UI that lends itself to 2-3min spent making a decision - that really requires spending time with customers not guessing. Etc etc etc.
+
+Happy to chat further.
