@@ -54,7 +54,7 @@
 
 ;; TODO Turbo's own anti-forgery setup
 ;; https://turbo.hotwired.dev/handbook/frames#anti-forgery-support-(csrf)
-;; 
+;;
 ;; (defn anti-forgery-field
 ;;   ([]
 ;;    (anti-forgery-field "__anti-forgery-token"))
@@ -68,22 +68,34 @@
   (list
    [:meta {:http-equiv "Content-Type" :content "text/html; charset=UTF-8"}]
    [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
-   [:link {:rel "stylesheet" :type "text/css" :href "/styles.css"
-           ;; TODO ok to have that prod?
-           :data-turbo-track "reload"
-           :hash (md5 (slurp (io/resource "public/styles.css")))}]
    ;; Favicons
    [:link {:rel "shortcut icon" :type "image/x-icon" :href "/img/favicon/favicon.ico"}]
    [:link {:rel "apple-touch-icon" :sizes "180x180" :type "image/png" :href "/img/favicon/apple-touch-icon.png"}]
    [:link {:rel "icon" :sizes "32x32"   :type "image/png" :href "/img/favicon/favicon-32x32.png"}]
    [:link {:rel "icon" :sizes "16x16"   :type "image/png" :href "/img/favicon/favicon-16x16.png"}]
+
+   [:link {:rel "stylesheet" :type "text/css" :href "/styles.css"
+           ;; TODO ok to have that prod?
+           :data-turbo-track "reload"
+           :hash (md5 (slurp (io/resource "public/styles.css")))}]
+
    ;; NOTE always ensure manifest "src" entries point to correct paths
    [:link {:rel "manifest" :href "/img/favicon/site.webmanifest"}]
 
 
    #_(script "var foo = {};")
+
+   ;; hotwired/turbo
    [:script {:src "/dist/turbo/turbo.es2017-esm.js" :type "module"}]
+
+   ;; fomatic-ui
+   [:script {:src "https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"}]
+   [:link {:rel "stylesheet" :type "text/css" :href "/dist/fomatic-ui/semantic.min.css" }]
+   [:script {:src "/dist/fomatic-ui/semantic.min.js"}]
+
+   ;; fontawesome
    [:script {:src "https://kit.fontawesome.com/4b5de4b57a.js" :crossorigin "anonymous"}]
+
    [:script {:src "/script.js" :type "text/javascript"}]
 
    ;; TODO Do I actually want this in dev? This only effects page visits and restoration but only
@@ -123,8 +135,3 @@
     (-> request :original :request-method (= :post))
     (constantly
      (ring.response/bad-request body)))))
-
-
-
-
-
