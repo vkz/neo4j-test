@@ -74,6 +74,9 @@
          [_ :benchmark/bench_simple ?group]]
        @(db)))
 
+#_
+(benchmark-groups)
+
 (defn benchmarks-for [group]
   (->> group
        (d/q '[:find [(pull ?e [*]) ...]
@@ -95,11 +98,48 @@
 (defn arrange-benchmarks []
   (into {} (for [group (benchmark-groups)]
              [group (arrange-benchmarks-for group)])))
+
 (comment
   (count (arrange-benchmarks))
   (take 2 (arrange-benchmarks))
   ;; end comment
   )
+
+(defn benchmark-stats-for [group version]
+  (let [benchmarks (d/q '[:find [?bench ...]
+                          :in $ ?group ?version
+                          :where
+                          [?e :benchmark/bench_simple ?group]
+                          [?e :benchmark/version ?version]
+                          [?e :benchmark/bench_full ?bench]]
+                        @(db)
+                        group version)]
+
+    (d/q '[:find ?bench (count ?mean) (avg ?mean) (stddev ?mean)
+           ;; :find (pull ?e [:benchmark/bench_full :benchmark/timestamp])
+           :with ?e
+           :in $ ?group ?version [?bench ...]
+           :where
+           [?e :benchmark/bench_simple ?group]
+           [?e :benchmark/bench_full ?bench]
+           [?e :benchmark/version ?version]
+           [?e :benchmark/mean ?mean]]
+         @(db)
+         group
+         version
+         benchmarks)))
+
+#_
+(benchmark-stats-for "Top.executePlan" "old")
+
+(defn benchmark-stats [group version]
+  (->> (for [[bench count mean var] (benchmark-stats-for group version)
+             :let [cv (/ var mean)]]
+         [bench {:count count :mean mean :var var :cv cv :group group :version version}])
+       (into {})))
+
+#_
+(benchmark-stats "Top.executePlan" "old")
 
 (defn read-csv-and-transact! [conn file-path]
   (with-open [reader (io/reader (io/resource file-path))]
