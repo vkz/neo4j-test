@@ -1,14 +1,15 @@
 (ns app.main
   (:require [fullmeta.cgi                       :as cgi :refer [my their]]
             [fullmeta.prelude                   :as fm.prelude :refer [make]]
-            [app.prelude                       :as prelude]
-            [app.web.prelude                   :as web]
+            [app.prelude                        :as prelude]
+            [app.web.prelude                    :as web]
+            [app.db                             :as db]
             [clojure.java.io                    :as io]
             [clojure.core.async                 :as async]
             [clojure.tools.logging              :as log]
             [clojure.pprint                     :as pp]
             [clojure.string                     :as string]
-            [clojure.edn :as edn]
+            [clojure.edn                        :as edn]
             [ring.adapter.jetty                 :as jetty]
             [ring.middleware.keyword-params     :refer [wrap-keyword-params]]
             [ring.middleware.nested-params      :refer [wrap-nested-params]]
@@ -86,7 +87,7 @@
                                (request :uri)
                                (request :query-params)
                                (get-in request [:headers "referer"]))))
-        
+
         (ring.response/status 500)))))
 
 (defn configure-jetty-server [server]
@@ -141,7 +142,7 @@
 
     (log/info (format "system: starting with options [%s]" opts))
     (log/info (format "env: type [%s], secrets [%s], port [%s], domain [%s]" (prelude/env "env_type") (prelude/env "env_edn") (prelude/env "env_port") (:host (prelude/env))))
-    
+
     {:server (when server
                (jetty/run-jetty
                 (-> default-handler
@@ -175,10 +176,10 @@
                    (update-vals edn/read-string)))]
     (log/info (format "main: starting with args [%s]" args))
     (let [system (system args)
+          _ (db/hydrate!)
           shutdown (fn []
                      (log/info "SIGTERM requested. Shutting down.")
                      (-> system :server .stop))]
       (.addShutdownHook (Runtime/getRuntime) (Thread. ^Runnable shutdown))
       (.join (:server system))
       (log/info "Exit"))))
-
