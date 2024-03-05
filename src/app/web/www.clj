@@ -17,18 +17,22 @@
     [:div param]))
 
 (defn tr-com [bench old new]
-  [:tr
-   [:td {:class "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"} (bench-params-com bench)]
-   ;; old readings
-   [:td {:class "whitespace-nowrap px-3 py-4 text-sm text-gray-400"} (->> old :count)]
-   [:td {:class "whitespace-nowrap px-3 py-4 text-sm text-gray-400"} (->> old :var (format "%.2f"))]
-   [:td {:class "whitespace-nowrap px-3 py-4 text-sm text-gray-400"} (->> old :cv (format "%.3f"))]
-   [:td {:class "whitespace-nowrap px-3 py-4 text-sm text-gray-400"} (->> old :mean (format "%.2f"))]
-   ;; new readings
-   [:td {:class "whitespace-nowrap px-3 py-4 text-sm text-gray-900"} (->> new :mean (format "%.2f"))]
-   [:td {:class "whitespace-nowrap px-3 py-4 text-sm text-gray-900"} (->> new :cv (format "%.3f"))]
-   [:td {:class "whitespace-nowrap px-3 py-4 text-sm text-gray-900"} (->> new :var (format "%.2f"))]
-   [:td {:class "whitespace-nowrap px-3 py-4 text-sm text-gray-900"} (->> new :count)]])
+  (let [lower-style " underline decoration-1 underline-offset-4"
+        o<n (when (< (:mean old) (:mean new)) lower-style)
+        o>=n (when-not o<n lower-style)
+        green (when o>=n "border-solid border-x-2 border-green-600 rounded-none")]
+    [:tr {:class green}
+     [:td {:class "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"} (bench-params-com bench)]
+     ;; old readings
+     [:td {:class "whitespace-nowrap px-3 py-4 text-sm text-gray-400"} (->> old :count)]
+     [:td {:class "whitespace-nowrap px-3 py-4 text-sm text-gray-400"} (->> old :var (format "%.2f"))]
+     [:td {:class "whitespace-nowrap px-3 py-4 text-sm text-gray-400"} (->> old :cv (format "%.3f"))]
+     [:td {:class (str "whitespace-nowrap px-3 py-4 text-sm text-gray-400 " o<n)} (->> old :mean (format "%.2f"))]
+     ;; new readings
+     [:td {:class (str "whitespace-nowrap px-3 py-4 text-sm text-gray-900" o>=n)} (->> new :mean (format "%.2f"))]
+     [:td {:class "whitespace-nowrap px-3 py-4 text-sm text-gray-900"} (->> new :cv (format "%.3f"))]
+     [:td {:class "whitespace-nowrap px-3 py-4 text-sm text-gray-900"} (->> new :var (format "%.2f"))]
+     [:td {:class "whitespace-nowrap px-3 py-4 text-sm text-gray-900"} (->> new :count)]]))
 
 (defn table-com [benchmarks]
   [:div {:class "mt-8 flow-root"}
