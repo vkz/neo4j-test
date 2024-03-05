@@ -89,9 +89,9 @@
    [:script {:src "/dist/turbo/turbo.es2017-esm.js" :type "module"}]
 
    ;; fomatic-ui
-   [:script {:src "https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"}]
-   [:link {:rel "stylesheet" :type "text/css" :href "/dist/fomatic-ui/semantic.min.css" }]
-   [:script {:src "/dist/fomatic-ui/semantic.min.js"}]
+   ;; [:script {:src "https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"}]
+   ;; [:link {:rel "stylesheet" :type "text/css" :href "/dist/fomatic-ui/semantic.min.css" }]
+   ;; [:script {:src "/dist/fomatic-ui/semantic.min.js"}]
 
    ;; fontawesome
    [:script {:src "https://kit.fontawesome.com/4b5de4b57a.js" :crossorigin "anonymous"}]

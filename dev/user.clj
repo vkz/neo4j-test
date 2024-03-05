@@ -38,7 +38,7 @@
                   (app.main/system components)))))
 
 (defn stop []
-  (reset! app.db/*connection* nil)
+  (reset! app.db/*connection nil)
   (some-> @system :server .stop)
   (swap! system (constantly nil)))
 

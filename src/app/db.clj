@@ -6,6 +6,53 @@
    [clojure.data.csv :as csv]
    [java-time :as jt]))
 
+(def schema
+  {:account/id
+   {:db/cardinality :db.cardinality/one
+    :db/unique      :db.unique/identity}
+
+   :benchmark/version
+   { ;; :db/valueType   :db.type/string
+    :db/cardinality :db.cardinality/one}
+
+   :benchmark/group
+   { ;; :db/valueType   :db.type/string
+    :db/cardinality :db.cardinality/one}
+
+   :benchmark/bench_simple
+   { ;; :db/valueType   :db.type/string
+    :db/cardinality :db.cardinality/one}
+
+   :benchmark/bench_full
+   { ;; :db/valueType   :db.type/string
+    :db/cardinality :db.cardinality/one}
+
+   :benchmark/mode
+   { ;; :db/valueType   :db.type/string
+    :db/cardinality :db.cardinality/one}
+
+   :benchmark/mean
+   { ;; :db/valueType   :db.type/float
+    :db/cardinality :db.cardinality/one}
+
+   :benchmark/unit
+   { ;; :db/valueType   :db.type/string
+    :db/cardinality :db.cardinality/one}
+
+   :benchmark/timestamp
+   { ;; :db/valueType   :db.type/instant
+    :db/cardinality :db.cardinality/one}
+
+   :benchmark/datetime
+   { ;; :db/valueType   :db.type/instant
+    :db/cardinality :db.cardinality/one}})
+
+(defonce *connection (atom nil))
+
+(defn db []
+  (or (deref *connection)
+      (reset! *connection (d/create-conn schema))))
+
 (defn parse-datetime [^String datetime]
   (jt/local-date-time (jt/formatter "dd/MM/yyyy HH:mm:ss") datetime))
 
@@ -20,46 +67,6 @@
   (parse-timestamp "1580833090210")
   ;; end comment
   )
-
-(def schema {:account/id
-             {:db/cardinality :db.cardinality/one
-              :db/unique      :db.unique/identity}
-
-             :benchmark/version
-             { ;; :db/valueType   :db.type/string
-              :db/cardinality :db.cardinality/one}
-
-             :benchmark/group
-             { ;; :db/valueType   :db.type/string
-              :db/cardinality :db.cardinality/one}
-
-             :benchmark/bench_simple
-             { ;; :db/valueType   :db.type/string
-              :db/cardinality :db.cardinality/one}
-
-             :benchmark/bench_full
-             { ;; :db/valueType   :db.type/string
-              :db/cardinality :db.cardinality/one}
-
-             :benchmark/mode
-             { ;; :db/valueType   :db.type/string
-              :db/cardinality :db.cardinality/one}
-
-             :benchmark/mean
-             { ;; :db/valueType   :db.type/float
-              :db/cardinality :db.cardinality/one}
-
-             :benchmark/unit
-             { ;; :db/valueType   :db.type/string
-              :db/cardinality :db.cardinality/one}
-
-             :benchmark/timestamp
-             { ;; :db/valueType   :db.type/instant
-              :db/cardinality :db.cardinality/one}
-
-             :benchmark/datetime
-             { ;; :db/valueType   :db.type/instant
-              :db/cardinality :db.cardinality/one}})
 
 (defn benchmark-groups []
   (d/q '[:find [?group ...]
@@ -94,12 +101,6 @@
   ;; end comment
   )
 
-(defonce *connection* (atom nil))
-
-(defn db []
-  (or (deref *connection*)
-      (reset! *connection* (d/create-conn schema))))
-
 (defn read-csv-and-transact! [conn file-path]
   (with-open [reader (io/reader (io/resource file-path))]
     (let [rows (doall (csv/read-csv reader))
@@ -118,12 +119,12 @@
            transact-map))))))
 
 (comment
-  (reset! *connection* nil)
+  (reset! *connection nil)
   (read-csv-and-transact! (db) "db/neo4j_data_old.csv")
   ;; end comment
   )
 
 (defn hydrate! []
-  (reset! *connection* nil)
+  (reset! *connection nil)
   (read-csv-and-transact! (db) "db/neo4j_data_old.csv")
   (read-csv-and-transact! (db) "db/neo4j_data_new.csv"))
