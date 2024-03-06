@@ -42,7 +42,7 @@ Code you want to look at:
 - [[https://github.com/vkz/neo4j-test/blob/master/src/app/web/www.clj][src/app/web/www.clj]]
 
 
-* TODO
+* What's left to do
 
 There's plenty. Proper regression testing: consider variance, introduce reasonable thresholds, etc. Without it not much use to render any reports, with it it'll be straigtforward. UI that lends itself to 2-3min spent making a decision - that really requires spending time with customers not guessing. Etc etc etc.
 
