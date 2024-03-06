@@ -153,7 +153,7 @@
                     (wrap-params)
                     (wrap-json-body {:keywords? true})
                     ;; e.g. part of cookie map {:value "foo" :secure (prelude/prod?) :same-site :lax}
-                    (wrap-cookies)
+                    #_(wrap-cookies)
                     (wrap-resource "public" {:allow-symlinks? true})
                     (wrap-content-type {"js" "text/javascript"})
                     (wrap-default-charset "utf-8")
